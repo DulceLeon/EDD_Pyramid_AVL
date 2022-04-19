@@ -13,6 +13,7 @@ public class Node<E> {
     private E contenido;    
     private Node<E> leftChild;
     private Node<E> rightChild;
+    private int level;
       
     public Node(E elElemento){
         this(elElemento, null, null);//Es decir que cuando el padre sea null, el nodo que se está inspeccionando será la raíz...
@@ -31,6 +32,10 @@ public class Node<E> {
     
     public void setLeftChild(Node<E> elHijoIzquierdo){
         leftChild = elHijoIzquierdo;
+    }
+    
+    public void resetLevel(int nivel){
+        this.level = nivel;
     }
     
    /* public void establecerHijoDerecho(E elElemento, int elIdentificador){
@@ -92,6 +97,10 @@ public class Node<E> {
     
     public void resetContent(E elElemento){
         contenido = elElemento;
+    }
+    
+    public int getLevel(){
+        return this.level;
     }
        
     public Node<E> getLeftChild(){

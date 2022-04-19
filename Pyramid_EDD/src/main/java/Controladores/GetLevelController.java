@@ -5,7 +5,11 @@
  */
 package Controladores;
 
-import Backend.EDD.AVLTree;
+import Backend.Manejadores.ManejadorAVL;
+import Backend.Objetos.Advice.Advice;
+import Backend.Objetos.Advice.Type;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,20 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class GetLevelController {
+    private ManejadorAVL manejadorAVL = ManejadorAVL.getAVLHandler();
+    private Advice advice = new Advice();
     
     @GetMapping("/Game/get-level")
-    public AVLTree getLevel(@RequestParam(value = "level", defaultValue = "1") String level){//para evitar errores, mejor recibirás un String y si ese diera una excepción al hacer el casteo, entonces se mostrará en pantalla y al menos no se morirá la app xD
-        int nivel;
+    public ResponseEntity<Advice> getLevel(@RequestParam(value = "level", defaultValue = "0") String level){//para evitar errores, mejor recibirás un String y si ese diera una excepción al hacer el casteo, entonces se mostrará en pantalla y al menos no se morirá la app xD
+        String JSON;
         
-        try {
-            nivel = Integer.parseInt(level);
-            
-            
-        } catch (NumberFormatException e) {
-            System.out.println("Imposible convertir el parámetro a un número");
-        }       
-        
-        return null;
+        if((JSON = this.manejadorAVL.getLevel(level)) != null){
+            return new ResponseEntity<>(advice.getAdvice(Type.OK, JSON), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(advice.getAdvice(Type.OTHER, this.manejadorAVL.getErrors()), HttpStatus.BAD_REQUEST);
     }
     
 }
+
+
+//aunque ahora que lo pienso, creo que cuando no envíen algo, esto se va a morir, porque no tengo hereadado el 
+//objeto/controlador al que se add la tag, para que se exe automáticamente...

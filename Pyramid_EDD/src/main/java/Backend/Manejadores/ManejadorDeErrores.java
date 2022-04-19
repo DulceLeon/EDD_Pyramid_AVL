@@ -13,7 +13,7 @@ public class ManejadorDeErrores {
     private String error = "";
     
     public void addError(String nuevoError){
-        this.error += nuevoError;
+        this.error += nuevoError+"\n";
     }
     
     public void resetError(){
@@ -23,6 +23,4 @@ public class ManejadorDeErrores {
     public String getError(){
         return this.error;
     }
-    
-    
 }

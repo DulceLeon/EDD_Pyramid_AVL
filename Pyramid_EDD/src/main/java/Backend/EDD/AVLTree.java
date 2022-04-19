@@ -80,6 +80,7 @@ public class AVLTree<E> extends BinaryTree<E>{
     }//sale mejor que estar haciendo un método para dar true or false por cada tipo de rotación... pues si se tuviera que hacer la última, se tendrían que hacer más llamadas del métood para hallar FE, que en este xD
     
     private void rotarSimplementeALaIzquierda(Node<E> nodoDesequilibrado, Node<E> padreDelDesequilibrado, String tipoHijo){
+        this.resetLevels_Left(nodoDesequilibrado, nodoDesequilibrado.getRightChild(), nodoDesequilibrado.getRightChild().getRightChild());//en un caso de rotación a la izq normal, siempre el 3er nodo que en conjunto con los demás, provoca desequilibrio, es el hijo derecho del derecho, o sea el nieto derecho xD        
         Node<E> nodoAuxiliar = nodoDesequilibrado.getRightChild();//se resguarda el nodo que reemplazará al desequilibrado...
         
         nodoDesequilibrado.resetRightChild(nodoAuxiliar.getLeftChild());//Se reubica el hijo izq del nodo de reemplazo, en el hijo der donde se encontraba el hijo que reemplezará al padre, puesto que en este lugar (del nodo de reemplazo) quedará el desequilibrado
@@ -98,7 +99,18 @@ public class AVLTree<E> extends BinaryTree<E>{
         }
     }//funcional 
     
+    private void resetLevels_Left(Node<E> nodoDesequilibrado, Node<E> hijoDerecho, Node<E> nietoDerecho){
+        //Se resetean los niveles        
+        nodoDesequilibrado.resetLevel(nodoDesequilibrado.getLevel()-1);
+        hijoDerecho.resetLevel(hijoDerecho.getLevel()+1);//debido a las rotaciones dobles, fijos fijos siempre serán los primeros dos nodos, el tercero podría o no existir... pero de igual forma siempre sería el derecho en el caso de las rot a la izq...
+        
+        if(nietoDerecho != null){
+            nietoDerecho.resetLevel(nietoDerecho.getLevel()+1);
+        }
+    }
+    
     private void rotarSimplementeALaDerecha(Node<E> nodoDesequilibrado, Node<E> padreDelDesequilibrado, String tipoHijo){
+        this.resetLevels_Right(nodoDesequilibrado, nodoDesequilibrado.getLeftChild(), nodoDesequilibrado.getLeftChild().getLeftChild());
         Node<E> nodoAuxiliar = nodoDesequilibrado.getLeftChild();//se resguarda el nodo que reemplazará al desequilibrado...
         
         nodoDesequilibrado.resetLeftChild(nodoAuxiliar.getRightChild());//Se reubica el hijo der del nodo de reemplazo, puesto que en este lugar quedará el desequilibrado y el hijo izquierdo (el lugar donde se colocará) correspondía al hijo que reemplazará a dicho desequilibrado...
@@ -116,6 +128,16 @@ public class AVLTree<E> extends BinaryTree<E>{
                 break;
         }//recuerda que no hay problemas con el hecho de que el padre haya cambiado porque esto podría suceder únicamente al llegar a evaluarlo a él, lo cual sucedería después de haber terminado con cada uno de sus hijos, por lo cual se puede decir que el padre no cambiará al menos mientras no se haya terminado de realizar las revisiones de los hijos...xD      
     }//funcional   
+    
+    private void resetLevels_Right(Node<E> nodoDesequilibrado, Node<E> hijoIzquierdo, Node<E> nietoIzquierdo){
+        //Se resetean los niveles        
+        nodoDesequilibrado.resetLevel(nodoDesequilibrado.getLevel()-1);
+        hijoIzquierdo.resetLevel(hijoIzquierdo.getLevel()+1);//debido a las rotaciones dobles, fijos fijos siempre serán los primeros dos nodos, el tercero podría o no existir... pero de igual forma siempre sería el derecho en el caso de las rot a la izq...
+        
+        if(nietoIzquierdo != null){
+            nietoIzquierdo.resetLevel(nietoIzquierdo.getLevel()+1);
+        }
+    }//puedo hacer esto así de simple, puesto que como el árbol, se creará desde 0, entonces no habrá nada más debajo de los nodos involucrados en el deseq, puesto que el nodo add generó eso, entonces todo se encuentra en una parte final. Y en caso de afectar tb a lo de arriba ahí si habría problema, pero no creo...
     
     private void rotarDoblementeALaIzquierda(Node<E> nodoDesequilibrado, Node<E> padreDelDesequilibrado, String tipoHijo){//este tipo de hijo es del desequilibrado, es decir del que tiene FE = |2|
         //este orden es así, pues se debe arreglar primero el hijo y luego al padre 
