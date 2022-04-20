@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Backend.EDD;
+package com.example.Pyramid_AVL_EDD.Backend.EDD;
 
 /**
  *

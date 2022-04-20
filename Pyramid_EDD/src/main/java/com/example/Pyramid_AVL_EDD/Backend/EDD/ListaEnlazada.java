@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Backend.EDD;
+package com.example.Pyramid_AVL_EDD.Backend.EDD;
 
 /**
  *
@@ -49,10 +49,16 @@ public class ListaEnlazada<E> {
         return nodoAuxiliar;
     }
     
+    /**
+     * The position should begin in 0
+     * and terminate in size()-1
+     * @param position
+     * @return
+     */
     public E getElement(int position){
-        NodoLista auxiliar = null;
+        NodoLista auxiliar = primerNodoLista;
         
-        for (int actual = 0; actual < this.size; actual++) {
+        for (int actual = 1; actual < this.size; actual++) {
             auxiliar = auxiliar.getNext();
             
             if(actual == position){

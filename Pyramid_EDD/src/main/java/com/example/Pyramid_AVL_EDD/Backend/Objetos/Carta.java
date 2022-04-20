@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Backend.Objetos;
+package com.example.Pyramid_AVL_EDD.Backend.Objetos;
 
 import java.util.Objects;
 
@@ -11,15 +11,23 @@ import java.util.Objects;
  *
  * @author phily
  */
-public class Carta{//Creo que el ID dejará de existir por la manera en la que se insertarán las cosas
+public class Carta extends Objeto{//Creo que el ID dejará de existir por la manera en la que se insertarán las cosas
     private int valor;
+    private String name;
     private String tipo;
     
-    public Carta(int valor, String tipo){
-        //int valorID = valor + ((tipo.equals("♦"))?10:((tipo.equals("♥"))?20:((tipo.equals("♠"))?30:40)));//ya no, por la forma en la que se realizará la inserción...
-        
+    
+    
+    public Carta(int valor, String name){        
+        super(valor + ((name.contains("♣"))?0:((name.contains("♦"))?20:((name.contains("♥"))?40:60))));//ya no, por la forma en la que se realizará la inserción...        
+     
         this.valor = valor;
-        this.tipo = tipo;
+        this.name = name;
+        this.tipo = ((name.contains("♣"))?"♣":((name.contains("♦"))?"♦":((name.contains("♥"))?"♥":"♠")));
+    }    
+    
+    private Carta(int ID){
+        
     }
     
     @Override
@@ -43,15 +51,12 @@ public class Carta{//Creo que el ID dejará de existir por la manera en la que s
        return false;
     }//creo que sí lo deberás sobreescribir, puesto que en este caso también interviene el tipo, par determinar si es o no igual...
     
-     public int compareTo(Carta anotherCard){
-        if(this.valor == anotherCard.getValor()){
-            return 0;
-        }else if(this.valor > anotherCard.getValor()){
-            return 1;
-        }
-        
-        return -1;
-    }   
+    //no debo sobreescribir el compareTo, pues por el cambio que app, se debe hacer la comp con los ID...
+    
+    @Override
+    public String toString(){
+        return "Carta[ nombre: "+name+", valor: "+valor+"] ";
+    }
     
     public int getValor() {
         return valor;
@@ -59,6 +64,10 @@ public class Carta{//Creo que el ID dejará de existir por la manera en la que s
 
     public void setValor(int valor) {
         this.valor = valor;
+    }
+    
+    public String getName(){
+        return this.name;
     }
 
     public String getTipo() {

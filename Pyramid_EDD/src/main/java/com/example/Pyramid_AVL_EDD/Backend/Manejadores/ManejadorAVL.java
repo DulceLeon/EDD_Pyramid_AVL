@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Backend.Manejadores;
+package com.example.Pyramid_AVL_EDD.Backend.Manejadores;
 
-import Backend.EDD.AVLTree;
-import Backend.EDD.ListaEnlazada;
-import Backend.Objetos.Carta;
+import com.example.Pyramid_AVL_EDD.Backend.EDD.AVLTree;
+import com.example.Pyramid_AVL_EDD.Backend.EDD.ListaEnlazada;
+import com.example.Pyramid_AVL_EDD.Backend.Objetos.Carta;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -57,9 +57,9 @@ public class ManejadorAVL {
             
             while((linea = buffer.readLine()) != null){
                 if(!linea.isEmpty() || !linea.isBlank()){//por si xD, aunque no sería debido a las eli de los "{" "}" hechas, puesto que ya revisé y al eli esto, elimina la línea si es que no hay algo maś que las rodee
+                    numeroLinea++;//pase el incremento aquí, puesto que solo debería aumentar al hallar una línea con contenido...
                     avlTree.insert(this.createCard(linea));
                 }                
-                numeroLinea++;
             }
         } catch (IOException ex) {
             System.out.println("La sintaxis de la línea #"+numeroLinea+" es incorrecta \n"+ex.getMessage());
@@ -73,8 +73,19 @@ public class ManejadorAVL {
         this.manejadorErrores.resetError();
         
         BufferedReader buffer = this.getContent(JSON);
+        int numeroLinea = 0;
+        Carta carta[] = new Carta[1];
+        
         try{        
-            this.avlTree.insert(this.createCard(buffer.toString()));
+            String linea;
+            while((linea = buffer.readLine()) != null){
+                if(!linea.isEmpty() || !linea.isBlank()){//por si xD, aunque no sería debido a las eli de los "{" "}" hechas, puesto que ya revisé y al eli esto, elimina la línea si es que no hay algo maś que las rodee
+                    carta[numeroLinea] = this.createCard(linea);
+                    numeroLinea++;
+                }                             
+            }//si me responden que no hay limitación en el número de cartas a insertar, entonces el while tendría que ser COMO el de la creación... hasta podría usarse ese método de no ser por las otras excepciones xD
+            
+            this.avlTree.insert(carta[0]);
         } catch (IOException ex) {
             System.out.println("Una o más líneas con sintaxis incorrecta\n"+ex.getMessage());
             manejadorErrores.addError("Una o más líneas con sintaxis incorrecta");
@@ -99,8 +110,8 @@ public class ManejadorAVL {
             while((linea = buffer.readLine()) != null){
                 if(!linea.isEmpty() || !linea.isBlank()){//por si xD, aunque no sería debido a las eli de los "{" "}" hechas, puesto que ya revisé y al eli esto, elimina la línea si es que no hay algo maś que las rodee
                     cartas[numeroLinea] = this.createCard(linea);
+                    numeroLinea++;
                 }                
-                numeroLinea++;
             }
         } catch (IOException ex) {
             System.out.println("La sintaxis de la línea #"+numeroLinea+" es incorrecta \n"+ex.getMessage());
@@ -118,7 +129,7 @@ public class ManejadorAVL {
                     avlTree.delete(cartas[1]);
                 }            
             }
-        }
+        }//por este if, no podrían haber 3 msjes de error, podría quitarlo pero no se si provocaría errores... bueno, si enviaron más de una carta de primero tendrían que arreglar eso, para así intentar la eli, entonces que se quede el if xD
         
         return ((this.manejadorErrores.getError().isBlank()));
     }
@@ -131,9 +142,7 @@ public class ManejadorAVL {
                 manejadorErrores.addError("Los valores de las cartas a eliminar deben sumar 13");
                 return false;
             }
-        }
-        
-        if((cartas[0].getValor()) == 13){            
+        }else if((cartas[0].getValor()) == 13){//no debería ser un if, sino un else-if
             return true;
         }
         
@@ -153,9 +162,15 @@ public class ManejadorAVL {
         String elementsOfLevel = "";
         
         try{
-            int level = Integer.parseInt(nivel);            
-            elementsOfLevel = this.jsonParser.toJSON((ListaEnlazada<Carta>) this.avlTree.getElementsOfLevel(level));
+            int level = (Integer.parseInt(nivel)-1);//puesto que para el usuario los niveles comenzarán desde 1, pero por la teoría debo restar a ese valor 1, puesto que el nivel de la raíz, es el cero...
             
+            ListaEnlazada<Carta> lista = (ListaEnlazada<Carta>) this.avlTree.getElementsOfLevel(level);
+            if(!lista.isEmpty()){
+                elementsOfLevel = this.jsonParser.toJSON(lista);
+            }else{
+                System.out.println("El nivel " + nivel + "no existe en el árbol: ");
+                manejadorErrores.addError("El nivel " + nivel + "no existe en el árbol");
+            }
         }catch(NumberFormatException e){
             System.out.println("Imposible convertir el parámetro a un número \nmsje: "+e.getMessage());
             manejadorErrores.addError("Imposible convertir el parámetro a un número");
@@ -190,9 +205,11 @@ public class ManejadorAVL {
     }//se tiene un valor default, para la queryString, entonces nunca se exe un caso default, pero quizá sería mejor quitarlo, para informar que hizo algo malo...
     
     private Carta createCard(String elemento)throws IOException, ArrayIndexOutOfBoundsException{//debemos que excepción es específicamente la que lanza cuando reciba un dato que no permite crear el obj...
-        String nombreCarta = elemento.split(",")[1];//puesto que solo necesito el segundo elemento... ya que cuando se invoque este método se hará sabiendo lo que se quiere hacer con el onjeto que éste método devolverá...
+        String nombreCarta = elemento.split(":")[1];//puesto que solo necesito el segundo elemento... ya que cuando se invoque este método se hará sabiendo lo que se quiere hacer con el onjeto que éste método devolverá...
+        nombreCarta = nombreCarta.replace("\"", "");
+        nombreCarta = nombreCarta.replace(",", "");
         
-        return new Carta(getValue(nombreCarta), nombreCarta);//creo que el ID no será necesario por lo que dijo la aux...
+        return new Carta(getValue(nombreCarta), (nombreCarta));//el ID se crea y setea en el cnstrct, puesto que allá se arma el valor, dep del tipo de corrimiento que corresponda con el tipo
     }
     
     private int getValue(String nombreCarta){

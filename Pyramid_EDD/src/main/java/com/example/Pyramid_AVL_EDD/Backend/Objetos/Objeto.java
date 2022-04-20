@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Backend.Objetos;
+package com.example.Pyramid_AVL_EDD.Backend.Objetos;
 
 /**
  *
@@ -11,6 +11,8 @@ package Backend.Objetos;
  */
 public class Objeto {
     int ID;
+    
+    public Objeto(){}
     
     public Objeto(int ID){
        this.ID = ID;

@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Controladores;
+package com.example.Pyramid_AVL_EDD.Controladores;
 
-import Backend.Manejadores.ManejadorGraficacion;
+import com.example.Pyramid_AVL_EDD.Backend.Manejadores.ManejadorGraficacion;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author phily
  */
+@RestController
 public class StatusGraphicatorController {
     private ManejadorGraficacion manejadorGraficacion;
     

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Backend.Tools;
+package com.example.Pyramid_AVL_EDD.Backend.Tools;
 
-import Backend.Objetos.Carta;
-import Backend.Objetos.Objeto;
+import com.example.Pyramid_AVL_EDD.Backend.Objetos.Carta;
+import com.example.Pyramid_AVL_EDD.Backend.Objetos.Objeto;
 
 /**
  *

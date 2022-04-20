@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Backend.Objetos.Advice;
+package com.example.Pyramid_AVL_EDD.Backend.Manejadores;
 
 /**
  *
  * @author phily
  */
-public class Respuesta extends Advice{
+public class ManejadorGraficacion {
     
-}
+}//aquí se tendrán los métodos respectivos para permitir la graficación...
