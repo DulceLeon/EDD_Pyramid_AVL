@@ -5,8 +5,6 @@
  */
 package com.example.Pyramid_AVL_EDD.Backend.Objetos;
 
-import java.util.Objects;
-
 /**
  *
  * @author phily
@@ -32,9 +30,7 @@ public class Carta extends Objeto{//Creo que el ID dejará de existir por la man
     
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + this.valor;
-        hash = 89 * hash + Objects.hashCode(this.tipo);
+        int hash = valor + ((name.contains("♣"))?0:((name.contains("♦"))?20:((name.contains("♥"))?40:60)));
         return hash;
     }//bueno, si sobreescribo esto no tendría que sobreescribir el equals, o eso pienso, y más creo que tendrás que hacer un hash propio, no así como este xD
 

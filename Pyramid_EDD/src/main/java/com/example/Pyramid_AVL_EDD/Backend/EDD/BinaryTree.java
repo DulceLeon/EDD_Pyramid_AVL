@@ -78,10 +78,9 @@ public class BinaryTree <E> {
     private void setInorder(Node<E> laRaiz, ListaEnlazada<E> sortElements) {
         if (laRaiz != null) {
             setInorder(laRaiz.getLeftChild(), sortElements);
+            sortElements.add(laRaiz.getContent());
             System.out.println(" " + laRaiz.getContent());
             setInorder(laRaiz.getRightChild(), sortElements);
-            
-            sortElements.add(laRaiz.getContent());
         }
     }
 
@@ -97,7 +96,6 @@ public class BinaryTree <E> {
             setPostorder(laRaiz.getLeftChild(), sortElements);
             setPostorder(laRaiz.getRightChild(), sortElements);
             System.out.println(laRaiz.getContent() + " ");
-            
             sortElements.add(laRaiz.getContent());
         }
     }
@@ -112,10 +110,9 @@ public class BinaryTree <E> {
     private void setPreorder(Node<E> laRaiz, ListaEnlazada<E> sortElements) {
         if (laRaiz != null) {
             System.out.println(laRaiz.getContent() + " ");
+            sortElements.add(laRaiz.getContent());
             setPreorder(laRaiz.getLeftChild(), sortElements);
             setPreorder(laRaiz.getRightChild(), sortElements);
-            
-            sortElements.add(laRaiz.getContent());
         }
     }//estos métodos para hacer el ordenamiento, no req invocar al addError del manejador de errores   
     
@@ -182,15 +179,16 @@ public class BinaryTree <E> {
     }
     
     public ListaEnlazada<E> getElementsOfLevel(ListaEnlazada<E> lista, Node<E> node, int nivel){
-        if (node != null) {
+        if (node != null) {            
+            getElementsOfLevel(lista, node.getLeftChild(), nivel);
+            
             if(node.getLevel()  == nivel){
                 lista.add(node.getContent());
                    
                 if(nivel == 0){                 
                     return lista;
                 }                
-            }            
-            getElementsOfLevel(lista, node.getLeftChild(), nivel);
+            }                        
             getElementsOfLevel(lista, node.getRightChild(), nivel);
         }  
         
@@ -220,6 +218,10 @@ public class BinaryTree <E> {
         }        
         
         return true;//NO se muestra un msje coherente, pero si funciona como debe UwU, lo digo porque ya lo corroboré con el debbuger xD [lo que sucede es que al llegar a la primer llamada, la var laRaiz tiene como valor literalmente la raíz... entonces eso es lo que termina reciviendo el método que muestra el msje :v
+    }
+    
+    public void graficar(String path){
+        raiz.graficar(path);
     }
 }
 

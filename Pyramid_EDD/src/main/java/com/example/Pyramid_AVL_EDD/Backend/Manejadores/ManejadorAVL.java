@@ -9,6 +9,9 @@ import com.example.Pyramid_AVL_EDD.Backend.EDD.AVLTree;
 import com.example.Pyramid_AVL_EDD.Backend.EDD.ListaEnlazada;
 import com.example.Pyramid_AVL_EDD.Backend.Objetos.Carta;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -19,6 +22,8 @@ import java.io.StringReader;
 public class ManejadorAVL {          
     //para app el modelo singleton
     private static ManejadorAVL manejadorAVL;
+    private final String PATH = "src/main/resources/Grafica/";
+    private final String NAME_GRAPH = "AVL.dot";
         
     private final AVLTree<Carta> avlTree;
     private final ManejadorDeErrores manejadorErrores;
@@ -150,11 +155,25 @@ public class ManejadorAVL {
         return false;
     }
     
-    public boolean getAVLImage(){
+    public FileInputStream getAVLImage() throws IOException{
         this.manejadorErrores.resetError();
+        FileInputStream inputStream = null;
+        try {
+            this.manejadorErrores.resetError();
+            
+            this.avlTree.graficar(this.PATH+this.NAME_GRAPH);
+            File file = new File(this.PATH + this.NAME_GRAPH);
+            inputStream = new FileInputStream(file);            
+        } //Aquí se mandará a invocar el método para hacer la graficación... y a partir del resultado que dé, se procederá a hacer la apertura, conversión, o lo que se deba hacer para que se muestre la img en pantalla
+        catch (FileNotFoundException ex) {
+            this.manejadorErrores.addError("No se pudo abrir la imagen");
+            System.out.println("No se pudo abrir la imagen " +ex.getMessage());
+        } finally {            
+           // inputStream.close();//puesto que aún se va a manejar en el controlador...
+        }
         
-        return true;
-    }//Aquí se mandará a invocar el método para hacer la graficación... y a partir del resultado que dé, se procederá a hacer la apertura, conversión, o lo que se deba hacer para que se muestre la img en pantalla
+        return inputStream;
+    }
     
     public String getLevel(String nivel){
         this.manejadorErrores.resetError();
@@ -219,6 +238,10 @@ public class ManejadorAVL {
            :(nombreCarta.contains("7")?7:(nombreCarta.contains("8")?8
            :(nombreCarta.contains("9")?9:(nombreCarta.contains("10")?10
            :(nombreCarta.contains("J")?11:(nombreCarta.contains("Q")?12:13))))))))))));    
+    }
+    
+    public ManejadorDeErrores getErrorHandler(){
+        return this.manejadorErrores;
     }
     
     public String getErrors(){

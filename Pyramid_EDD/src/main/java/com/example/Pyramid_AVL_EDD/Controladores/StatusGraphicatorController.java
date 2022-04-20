@@ -5,8 +5,16 @@
  */
 package com.example.Pyramid_AVL_EDD.Controladores;
 
-import com.example.Pyramid_AVL_EDD.Backend.Manejadores.ManejadorGraficacion;
+import com.example.Pyramid_AVL_EDD.Backend.Manejadores.ManejadorAVL;
+import com.example.Pyramid_AVL_EDD.Backend.Objetos.Advice.Advice;
+import com.example.Pyramid_AVL_EDD.Backend.Objetos.Advice.Type;
+import java.io.FileInputStream;
+import java.io.IOException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -15,16 +23,51 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class StatusGraphicatorController {
-    private ManejadorGraficacion manejadorGraficacion;
+    private ManejadorAVL manejadorAVL = ManejadorAVL.getAVLHandler();
+    private Advice advice = new Advice();
     
-    @GetMapping("/Game/status-avltree")//si te da error ahí averiguas cómo setear direcciones
-    public void graph(){
-        this.manejadorGraficacion = new ManejadorGraficacion();
+    @ResponseBody
+    @GetMapping(value = "/Game/status-avltree",
+     produces = MediaType.APPLICATION_JSON_VALUE)//si te da error ahí averiguas cómo setear direcciones... si se puede devolver un JSON, por los msjes que se deben desplegar, entonces no uses esto MediaType.IMAGE_JPEG_VALUE
+    public ResponseEntity<Advice> graph(){
+        byte[] bytes = null;                       
+        FileInputStream inputStream = null;           
+            
+        try {
+            inputStream = this.manejadorAVL.getAVLImage();
+            
+            if(inputStream != null){
+                bytes = new byte[inputStream.available()];
+                inputStream.read(bytes, 0, inputStream.available());            
+            }//no agrego un else para setear la desc, puesto que se add en el cathc ya sea de aquí o del manejador AVL, dependiendo de la causa de la excepción...
+        } catch (IOException ex) {
+            this.manejadorAVL.getErrorHandler().addError("Surgió un error en el flujo de los datos");
+            System.out.println("Surgió un error en el flujo de los datos" +ex.getMessage());
+        }finally{
+            try {
+                inputStream.close();
+            } catch (IOException ex) {
+                this.manejadorAVL.getErrorHandler().addError("Error al intentar cerrar el flujo");
+                System.out.println("Error al intentar cerrar el flujo " +ex.getMessage());                
+            }
+        }
         
+        if(!this.manejadorAVL.getErrors().isBlank()){
+            return new ResponseEntity<>(advice.getAdvice(Type.OTHER, "Error al generar representación gráfica\n\n"+this.manejadorAVL.getErrors()), HttpStatus.BAD_REQUEST);
+        }
         
-        
-    
-    }//en este caso no debe retornar un objeto, puesto que lo que se hará es agregar la imagen a la vista...
+        return new ResponseEntity<>(advice.getAdvice(Type.OK, 
+               new String(bytes, java.nio.charset.StandardCharsets.UTF_8)), HttpStatus.BAD_REQUEST);
+    }
     
     
 }//Esta no req de paráms
+
+
+//forma 1
+            //InputStream in = ServletContext.getResourceAsStream("/images/no_image.jpg");
+            //return IOUtils.toByteArray(in);
+            
+            //forma 2
+            //File img = new File("src/main/resources/static/test.jpg");
+            //return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.get().getContentType(img))).body(Files.readAllBytes(img.toPath()));

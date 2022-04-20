@@ -56,17 +56,24 @@ public class ListaEnlazada<E> {
      * @return
      */
     public E getElement(int position){
-        NodoLista auxiliar = primerNodoLista;
+        NodoLista<E> auxiliar = primerNodoLista;
+        NodoLista<E> auxiliar2 = null;
         
-        for (int actual = 1; actual < this.size; actual++) {
-            auxiliar = auxiliar.getNext();
-            
-            if(actual == position){
-                break;
+        if(auxiliar != null){
+            if(position == 0){
+                return auxiliar.getContent();
             }
-        }
         
-        return ((auxiliar != null)?((E) auxiliar.getContent()):null);
+            for (int actual = 1; actual < this.size; actual++) {
+                auxiliar = auxiliar.getNext();
+            
+                if(actual == position){
+                    auxiliar2 = auxiliar;
+                    break;
+                }
+            }
+        }        
+        return ((auxiliar2 != null)?((E) auxiliar2.getContent()):null);//esta comparación solo se utilizará cuando la lista tenga un tamaño = 0
     }
     
     public NodoLista<E> getFirst(){

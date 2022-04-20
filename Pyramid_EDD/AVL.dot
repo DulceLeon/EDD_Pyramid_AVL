@@ -1,0 +1,15 @@
+digraph grafica{
+rankdir=TB;
+node [shape = record, style=filled, fillcolor=seashell2];
+nodo31 [ label ="<C0>|Carta[ nombre:  J♦, valor: 11] |<C1>"];
+nodo5 [ label ="<C0>|Carta[ nombre:  5♣, valor: 5] |<C1>"];
+nodo4 [ label ="Carta[ nombre:  4♣, valor: 4] "];
+nodo5:C0->nodo4
+nodo9 [ label ="Carta[ nombre:  9♣, valor: 9] "];
+nodo5:C1->nodo9
+nodo31:C0->nodo5
+nodo50 [ label ="<C0>|Carta[ nombre:  10♥, valor: 10] |<C1>"];
+nodo71 [ label ="Carta[ nombre:  J♠, valor: 11] "];
+nodo50:C1->nodo71
+nodo31:C1->nodo50
+}

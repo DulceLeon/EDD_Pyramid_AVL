@@ -5,6 +5,9 @@
  */
 package com.example.Pyramid_AVL_EDD.Backend.EDD;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
+
 /**
  *
  * @author phily
@@ -14,6 +17,8 @@ public class Node<E> {
     private Node<E> leftChild;
     private Node<E> rightChild;
     private int level;
+    
+    private final String GRAPH_NAME = "AVL.dot";
       
     public Node(E elElemento){
         this(elElemento, null, null);//Es decir que cuando el padre sea null, el nodo que se está inspeccionando será la raíz...
@@ -123,5 +128,62 @@ public class Node<E> {
         }
         return 1;
     }//literalmente para hijos, porque los nietos no se cuentan con esto xD
+    
+     public void graficar(String path) {
+        FileWriter fichero = null;
+        PrintWriter escritor;
+        try
+        {
+            fichero = new FileWriter(this.GRAPH_NAME);
+            escritor = new PrintWriter(fichero);
+            escritor.print(getCodigoGraphviz());
+        } 
+        catch (Exception e){
+            System.err.println("Error al escribir el archivo aux_grafico.dot");
+        }finally{
+           try {
+                if (null != fichero)
+                    fichero.close();
+           }catch (Exception e2){
+               System.err.println("Error al cerrar el archivo aux_grafico.dot");
+           } 
+        }                        
+        try{
+          Runtime rt = Runtime.getRuntime();
+          rt.exec( "dot -Tjpg "+this.GRAPH_NAME+" -o "+path);//dot -Tjpg -o "+path+"AVL.dot
+          //Esperamos medio segundo para dar tiempo a que la imagen se genere.
+          //Para que no sucedan errores en caso de que se decidan graficar varios
+          //árboles sucesivamente.
+          Thread.sleep(500);
+        } catch (Exception ex) {
+            System.err.println("Error al generar la imagen para el archivo aux_grafico.dot "+ ex.getMessage());
+        }
+    }
+    
+    private String getCodigoGraphviz() {
+        return "digraph grafica{\n" +
+               "rankdir=TB;\n" +
+               "node [shape = record, style=filled, fillcolor=seashell2];\n"+
+                getCodigoInterno()+
+                "}\n";
+    }
+    
+    private String getCodigoInterno() {
+        String etiqueta;
+        if(leftChild==null && rightChild==null){
+            etiqueta="nodo"+contenido.hashCode()+" [ label =\""+contenido.toString()+"\"];\n";
+        }else{
+            etiqueta="nodo"+contenido.hashCode()+" [ label =\"<C0>|"+contenido.toString()+"|<C1>\"];\n";
+        }
+        if(leftChild!=null){
+            etiqueta=etiqueta + leftChild.getCodigoInterno() +
+               "nodo"+contenido.hashCode()+":C0->nodo"+leftChild.contenido.hashCode()+"\n";
+        }
+        if(rightChild!=null){
+            etiqueta=etiqueta + rightChild.getCodigoInterno() +
+               "nodo"+contenido.hashCode()+":C1->nodo"+rightChild.contenido.hashCode()+"\n";                    
+        }
+        return etiqueta;
+    }        
     
 }

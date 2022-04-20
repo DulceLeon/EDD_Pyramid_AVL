@@ -7,27 +7,24 @@ package com.example.Pyramid_AVL_EDD.Backend.Manejadores;
 
 import com.example.Pyramid_AVL_EDD.Backend.EDD.ListaEnlazada;
 import com.example.Pyramid_AVL_EDD.Backend.Objetos.Carta;
+import org.json.JSONObject;
 
 /**
  *
  * @author phily
  */
 public class JSONParser {
-    
     //será útil para getLevel y tb cuando soliciten 
     //el AVL en un cierto orden
-    public String toJSON(ListaEnlazada<Carta> cartas){
+    public String toJSON(ListaEnlazada<Carta> cartas){       
+        JSONObject jsonObject = new JSONObject();
         
-        String JSON = "{\\u000A";
-        int cartaActual;
+        for (int actual = 0; actual < cartas.size(); actual++) {
+            jsonObject.put(String.valueOf(actual),
+             cartas.getElement(actual).getName());//no hay necesidad de manejar que un nodo posiblemente sea null, puesto que yo xD, mando los índices, no el usuario...
+        }
         
-        for (cartaActual = 0; cartaActual < (cartas.size()-1); cartaActual++) {
-            JSON += '\u0022'+cartaActual+'\u0022'+":" +'\u0022'+
-                    cartas.getElement(cartaActual).getName()+'\u0022'+",";
-        }        
-        
-        JSON += '\u0022'+cartaActual+'\u0022'+": "+'\u0022'+cartas.getElement(cartaActual).getName()+'\u0022';
-        return (JSON+"\\u000A}");//se supone no tendría que haber cabida de errores 
+        return jsonObject.toString();
     }
     
 }
