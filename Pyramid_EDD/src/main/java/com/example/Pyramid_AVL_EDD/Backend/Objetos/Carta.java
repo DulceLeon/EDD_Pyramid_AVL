@@ -14,8 +14,6 @@ public class Carta extends Objeto{//Creo que el ID dejará de existir por la man
     private String name;
     private String tipo;
     
-    
-    
     public Carta(int valor, String name){        
         super(valor + ((name.contains("♣"))?0:((name.contains("♦"))?20:((name.contains("♥"))?40:60))));//ya no, por la forma en la que se realizará la inserción...        
      
@@ -51,6 +49,10 @@ public class Carta extends Objeto{//Creo que el ID dejará de existir por la man
     
     @Override
     public String toString(){
+        return name;//return "Carta[ nombre: "+name+", valor: "+valor+"] ";
+    }
+    
+    public String asString(){
         return "Carta[ nombre: "+name+", valor: "+valor+"] ";
     }
     

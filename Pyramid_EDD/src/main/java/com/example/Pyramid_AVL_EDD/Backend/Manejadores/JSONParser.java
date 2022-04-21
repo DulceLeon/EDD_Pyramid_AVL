@@ -27,4 +27,11 @@ public class JSONParser {
         return jsonObject.toString();
     }
     
+    public String path_ToJSON(String path){
+        JSONObject jsonObject = new JSONObject();
+        
+        jsonObject.put("path", path);
+        return jsonObject.toString();
+    }
+    
 }

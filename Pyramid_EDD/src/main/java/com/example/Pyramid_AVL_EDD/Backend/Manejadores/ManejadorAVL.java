@@ -10,8 +10,6 @@ import com.example.Pyramid_AVL_EDD.Backend.EDD.ListaEnlazada;
 import com.example.Pyramid_AVL_EDD.Backend.Objetos.Carta;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -23,7 +21,9 @@ public class ManejadorAVL {
     //para app el modelo singleton
     private static ManejadorAVL manejadorAVL;
     private final String PATH = "src/main/resources/Grafica/";
-    private final String NAME_GRAPH = "AVL.dot";
+    private final String GRAPH_NAME = "AVL.dot";
+    private final String IMG_NAME = "AVL.jpg";
+    private int TOTAL_CARDS = 52;
         
     private final AVLTree<Carta> avlTree;
     private final ManejadorDeErrores manejadorErrores;
@@ -52,8 +52,7 @@ public class ManejadorAVL {
     }
     
     public boolean createTree(String JSON){   
-        this.manejadorErrores.resetError();
-        
+        this.manejadorErrores.resetError();        
         BufferedReader buffer = this.getContent(JSON);
         int numeroLinea = 0;
         
@@ -75,22 +74,25 @@ public class ManejadorAVL {
     }//dependiendo del valor booleano que se despligue, el servlet deidirá entre retornar el string del error o mostrar el string de éxito xD o en el caso dw la graficación, la representación del elemento...  
     
     public boolean insertCard(String JSON){
-        this.manejadorErrores.resetError();
-        
+        this.manejadorErrores.resetError();        
         BufferedReader buffer = this.getContent(JSON);
         int numeroLinea = 0;
-        Carta carta[] = new Carta[1];
+        Carta cartas[] = new Carta[1];
         
         try{        
             String linea;
             while((linea = buffer.readLine()) != null){
                 if(!linea.isEmpty() || !linea.isBlank()){//por si xD, aunque no sería debido a las eli de los "{" "}" hechas, puesto que ya revisé y al eli esto, elimina la línea si es que no hay algo maś que las rodee
-                    carta[numeroLinea] = this.createCard(linea);
-                    numeroLinea++;
+                    Carta cartaCreada = this.createCard(linea);
+                    
+                    if(cartaCreada != null){
+                        cartas[numeroLinea] = cartaCreada;                        
+                    }                    
+                    numeroLinea++;//puesto que sea que esté bien o no, debe contarse media vez no sea un espacio vacío xD...
                 }                             
             }//si me responden que no hay limitación en el número de cartas a insertar, entonces el while tendría que ser COMO el de la creación... hasta podría usarse ese método de no ser por las otras excepciones xD
             
-            this.avlTree.insert(carta[0]);
+            this.avlTree.insert(cartas[0]);
         } catch (IOException ex) {
             System.out.println("Una o más líneas con sintaxis incorrecta\n"+ex.getMessage());
             manejadorErrores.addError("Una o más líneas con sintaxis incorrecta");
@@ -114,8 +116,12 @@ public class ManejadorAVL {
             
             while((linea = buffer.readLine()) != null){
                 if(!linea.isEmpty() || !linea.isBlank()){//por si xD, aunque no sería debido a las eli de los "{" "}" hechas, puesto que ya revisé y al eli esto, elimina la línea si es que no hay algo maś que las rodee
-                    cartas[numeroLinea] = this.createCard(linea);
-                    numeroLinea++;
+                    Carta cartaCreada = this.createCard(linea);
+                    
+                    if(cartaCreada != null){
+                        cartas[numeroLinea] = cartaCreada;                        
+                    }
+                    numeroLinea++;//puesto que sea que esté bien o no, debe contarse media vez no sea un espacio vacío xD...
                 }                
             }
         } catch (IOException ex) {
@@ -155,24 +161,14 @@ public class ManejadorAVL {
         return false;
     }
     
-    public FileInputStream getAVLImage() throws IOException{
-        this.manejadorErrores.resetError();
-        FileInputStream inputStream = null;
-        try {
-            this.manejadorErrores.resetError();
-            
-            this.avlTree.graficar(this.PATH+this.NAME_GRAPH);
-            File file = new File(this.PATH + this.NAME_GRAPH);
-            inputStream = new FileInputStream(file);            
-        } //Aquí se mandará a invocar el método para hacer la graficación... y a partir del resultado que dé, se procederá a hacer la apertura, conversión, o lo que se deba hacer para que se muestre la img en pantalla
-        catch (FileNotFoundException ex) {
-            this.manejadorErrores.addError("No se pudo abrir la imagen");
-            System.out.println("No se pudo abrir la imagen " +ex.getMessage());
-        } finally {            
-           // inputStream.close();//puesto que aún se va a manejar en el controlador...
-        }
+    public String getAVLImage() throws IOException{                
+        this.manejadorErrores.resetError(); //Aquí se mandará a invocar el método para hacer la graficación... y a partir del resultado que dé, se procederá a hacer la apertura, conversión, o lo que se deba hacer para que se muestre la img en pantalla
         
-        return inputStream;
+        this.avlTree.graficar(this.PATH+this.IMG_NAME);
+        File file = new File(this.PATH + this.IMG_NAME);
+        //inputStream = new FileInputStream(file);
+        
+        return this.jsonParser.path_ToJSON(file.getPath());
     }
     
     public String getLevel(String nivel){
@@ -228,7 +224,29 @@ public class ManejadorAVL {
         nombreCarta = nombreCarta.replace("\"", "");
         nombreCarta = nombreCarta.replace(",", "");
         
-        return new Carta(getValue(nombreCarta), (nombreCarta));//el ID se crea y setea en el cnstrct, puesto que allá se arma el valor, dep del tipo de corrimiento que corresponda con el tipo
+        if(isACard(nombreCarta)){
+            return new Carta(getValue(nombreCarta), (nombreCarta).trim());//el ID se crea y setea en el cnstrct, puesto que allá se arma el valor, dep del tipo de corrimiento que corresponda con el tipo
+        }        
+        
+        System.out.println("El elemento: "+ nombreCarta +". NO corresponde a una carta");
+        manejadorErrores.addError("El elemento: "+ nombreCarta +". NO corresponde a una carta");    
+        return null;
+    }
+    
+    public boolean isACard(String name){
+        String tipoCartas[] = {"♣", "♥", "♦", "♠"};
+        
+        for (int carta = 0; carta < 4; carta++) {
+            for (int opcion = 1; opcion <= 13; opcion++) {
+                if(name.trim().equals(((opcion == 1)?"As":((opcion == 11)?"J":
+                        ((opcion == 12)?"Q":((opcion == 13)?"K":(opcion)))))
+                        + tipoCartas[carta])){
+                    return true;
+                }//aquí ya no es necesario colocar el trim, puesto que esto se realiza al enviar el param nombre para crear la Carta
+            }    
+        }        
+        
+        return false;
     }
     
     private int getValue(String nombreCarta){
@@ -246,9 +264,5 @@ public class ManejadorAVL {
     
     public String getErrors(){
         return this.manejadorErrores.getError();
-    }
-    
-    public AVLTree<Carta> getAVL(){
-        return this.avlTree;
     }
 }

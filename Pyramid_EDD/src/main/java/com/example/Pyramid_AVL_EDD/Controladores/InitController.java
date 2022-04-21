@@ -31,7 +31,7 @@ public class InitController {
         if(this.manejadorAVL.createTree(JSON)){
             return new ResponseEntity<>(advice.getAdvice(Type.OK, "El árbol creado con éxito"), HttpStatus.OK);
             //return new ResponseEntity<>(HttpStatus.OK);
-        }else if(!this.manejadorAVL.getErrors().contains("sintaxis")){
+        }else if(!this.manejadorAVL.getErrors().contains("sintaxis") && !this.manejadorAVL.getErrors().contains("corresponde")){
             return new ResponseEntity<>(advice.getAdvice(Type.DUPLICATE_CARD, this.manejadorAVL.getErrors()), HttpStatus.NOT_ACCEPTABLE);
         }
         
