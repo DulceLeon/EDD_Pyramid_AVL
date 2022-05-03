@@ -27,7 +27,7 @@ public class JSONParser {
         return jsonObject.toString();
     }
     
-    public String path_ToJSON(String path){
+    public String path_ToJSON(String path){//si recibe algo nulo, simplemente devuelve un contenido vacío...
         JSONObject jsonObject = new JSONObject();
         
         jsonObject.put("path", path);

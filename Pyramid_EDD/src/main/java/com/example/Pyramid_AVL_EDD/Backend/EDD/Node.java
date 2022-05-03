@@ -5,7 +5,9 @@
  */
 package com.example.Pyramid_AVL_EDD.Backend.EDD;
 
+import com.example.Pyramid_AVL_EDD.Backend.Tools.ImageGenerator;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -16,6 +18,7 @@ public class Node<E> {
     private E contenido;    
     private Node<E> leftChild;
     private Node<E> rightChild;
+    private ImageGenerator imageGenerator;
     private int level;
     
     private final String GRAPH_NAME = "AVL.dot";
@@ -129,17 +132,22 @@ public class Node<E> {
         return 1;
     }//literalmente para hijos, porque los nietos no se cuentan con esto xD
     
-     public void graficar(String path) {
+     public void graficar(String dotPath, String imageDirectory) {
         FileWriter fichero = null;
         PrintWriter escritor;
         try
         {
+            /*this.imageGenerator = new ImageGenerator();
+            this.imageGenerator.setGraphInfo(this.GRAPH_NAME, dotPath, imageDirectory);
+            this.imageGenerator.saveImage(getCodigoGraphviz());*/
+            
             fichero = new FileWriter(this.GRAPH_NAME);
             escritor = new PrintWriter(fichero);
             escritor.print(getCodigoGraphviz());
         } 
         catch (Exception e){
-            System.err.println("Error al escribir el archivo aux_grafico.dot");
+            System.out.println("dotPath: "+ dotPath + "imagePath: "+imageDirectory+"\n");
+            System.err.println("Error al escribir el archivo aux_grafico.dot" + e.getMessage());
         }finally{
            try {
                 if (null != fichero)
@@ -147,17 +155,18 @@ public class Node<E> {
            }catch (Exception e2){
                System.err.println("Error al cerrar el archivo aux_grafico.dot");
            } 
-        }                        
-        try{
-          Runtime rt = Runtime.getRuntime();
-          rt.exec( "dot -Tjpg "+this.GRAPH_NAME+" -o "+path);//dot -Tjpg -o "+path+"AVL.dot
-          //Esperamos medio segundo para dar tiempo a que la imagen se genere.
-          //Para que no sucedan errores en caso de que se decidan graficar varios
-          //árboles sucesivamente.
-          Thread.sleep(500);
-        } catch (Exception ex) {
+        }                
+
+        try {      
+            Runtime runtime = Runtime.getRuntime();              
+            runtime.exec( "dot -Tjpg "+this.GRAPH_NAME+" -o "+ imageDirectory);            
+        }catch (IOException ex) {
             System.err.println("Error al generar la imagen para el archivo aux_grafico.dot "+ ex.getMessage());
-        }
+        }        
+         
+        /*this.imageGenerator = new ImageGenerator();
+        this.imageGenerator.setGraphInfo(this.GRAPH_NAME, path);
+        this.imageGenerator.start();*/
     }
     
     private String getCodigoGraphviz() {

@@ -102,13 +102,17 @@ public class AVLTree<E> extends BinaryTree<E>{
     private void resetLevels_Left(Node<E> nodoDesequilibrado, Node<E> hijoDerecho, Node<E> nietoDerecho){
         //Se resetean los niveles        
         nodoDesequilibrado.resetLevel(nodoDesequilibrado.getLevel()+1);
+        resetLevelsOfindirectNodes(nodoDesequilibrado.getLeftChild(), 1);//puesto que los otros hijos, si existen tb cb de nivel
+        
         hijoDerecho.resetLevel(hijoDerecho.getLevel()-1);//debido a las rotaciones dobles, fijos fijos siempre serán los primeros dos nodos, el tercero podría o no existir... pero de igual forma siempre sería el derecho en el caso de las rot a la izq...
         
         if(nietoDerecho != null){
             nietoDerecho.resetLevel(nietoDerecho.getLevel()-1);
+            resetLevelsOfindirectNodes(nietoDerecho.getRightChild(), -1);//no pongo un if, porque el método de reseteo de nodos indirectos, ya lo posee xD
+            resetLevelsOfindirectNodes(nietoDerecho.getLeftChild(), -1);
         }
-    }//antes estaban al revés los signos, según veo ahora xD
-    
+    }//antes estaban al revés los signos, según veo ahora xD    
+        
     private void rotarSimplementeALaDerecha(Node<E> nodoDesequilibrado, Node<E> padreDelDesequilibrado, String tipoHijo){
         this.resetLevels_Right(nodoDesequilibrado, nodoDesequilibrado.getLeftChild(), nodoDesequilibrado.getLeftChild().getLeftChild());
         Node<E> nodoAuxiliar = nodoDesequilibrado.getLeftChild();//se resguarda el nodo que reemplazará al desequilibrado...
@@ -132,12 +136,26 @@ public class AVLTree<E> extends BinaryTree<E>{
     private void resetLevels_Right(Node<E> nodoDesequilibrado, Node<E> hijoIzquierdo, Node<E> nietoIzquierdo){
         //Se resetean los niveles        
         nodoDesequilibrado.resetLevel(nodoDesequilibrado.getLevel()+1);
+        resetLevelsOfindirectNodes(nodoDesequilibrado.getRightChild(), 1);//puesto que los otros hijos, si existen tb cb de nivel
+        
         hijoIzquierdo.resetLevel(hijoIzquierdo.getLevel()-1);//debido a las rotaciones dobles, fijos fijos siempre serán los primeros dos nodos, el tercero podría o no existir... pero de igual forma siempre sería el derecho en el caso de las rot a la izq...
         
         if(nietoIzquierdo != null){
             nietoIzquierdo.resetLevel(nietoIzquierdo.getLevel()-1);
+            resetLevelsOfindirectNodes(nietoIzquierdo.getRightChild(), -1);//no pongo un if, porque el método de reseteo de nodos indirectos, ya lo posee xD
+            resetLevelsOfindirectNodes(nietoIzquierdo.getLeftChild(), -1);
         }
     }//puedo hacer esto así de simple, puesto que como el árbol, se creará desde 0, entonces no habrá nada más debajo de los nodos involucrados en el deseq, puesto que el nodo add generó eso, entonces todo se encuentra en una parte final. Y en caso de afectar tb a lo de arriba ahí si habría problema, pero no creo...
+    
+    private void resetLevelsOfindirectNodes(Node<E> node, int incremento){
+        if (node != null) {            
+            resetLevelsOfindirectNodes(node.getLeftChild(), incremento);
+            
+            node.resetLevel(node.getLevel()+incremento);//será positivo o negativo según corresp xD
+            
+            resetLevelsOfindirectNodes(node.getRightChild(), incremento);
+        }  
+    }
     
     private void rotarDoblementeALaIzquierda(Node<E> nodoDesequilibrado, Node<E> padreDelDesequilibrado, String tipoHijo){//este tipo de hijo es del desequilibrado, es decir del que tiene FE = |2|
         //este orden es así, pues se debe arreglar primero el hijo y luego al padre 

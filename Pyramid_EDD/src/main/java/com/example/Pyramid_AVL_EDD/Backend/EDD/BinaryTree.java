@@ -220,8 +220,9 @@ public class BinaryTree <E> {
         return true;//NO se muestra un msje coherente, pero si funciona como debe UwU, lo digo porque ya lo corroboré con el debbuger xD [lo que sucede es que al llegar a la primer llamada, la var laRaiz tiene como valor literalmente la raíz... entonces eso es lo que termina reciviendo el método que muestra el msje :v
     }
     
-    public void graficar(String path){
-        raiz.graficar(path);
+    public void graficar(String dotPath, String imageDirectory){
+        Node<E> auxiliar = raiz;
+        auxiliar.graficar(dotPath, imageDirectory);
     }
 }
 

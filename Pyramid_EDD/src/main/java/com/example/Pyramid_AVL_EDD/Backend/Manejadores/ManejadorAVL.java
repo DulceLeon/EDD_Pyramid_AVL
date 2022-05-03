@@ -161,14 +161,20 @@ public class ManejadorAVL {
         return false;
     }
     
-    public String getAVLImage() throws IOException{                
+    public String getAVLImage()throws IOException{                
         this.manejadorErrores.resetError(); //Aquí se mandará a invocar el método para hacer la graficación... y a partir del resultado que dé, se procederá a hacer la apertura, conversión, o lo que se deba hacer para que se muestre la img en pantalla
+        File file;        
         
-        this.avlTree.graficar(this.PATH+this.IMG_NAME);
-        File file = new File(this.PATH + this.IMG_NAME);
-        //inputStream = new FileInputStream(file);
+        this.avlTree.graficar(this.PATH+this.GRAPH_NAME, this.PATH+this.IMG_NAME);
+        file = new File(this.PATH + this.IMG_NAME);
         
+        System.out.println("se retorna el path");
         return this.jsonParser.path_ToJSON(file.getPath());
+        
+        /*this.manejadorAVL.getErrorHandler().addError("Surgió un error en el flujo de los datos");
+          System.out.println("Surgió un error en el flujo de los datos" +e.getMessage());*/
+        
+        //inputStream = new FileInputStream(file);
     }
     
     public String getLevel(String nivel){
