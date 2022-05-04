@@ -9,7 +9,6 @@ import com.example.Pyramid_AVL_EDD.Backend.EDD.AVLTree;
 import com.example.Pyramid_AVL_EDD.Backend.EDD.ListaEnlazada;
 import com.example.Pyramid_AVL_EDD.Backend.Objetos.Carta;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -20,7 +19,7 @@ import java.io.StringReader;
 public class ManejadorAVL {          
     //para app el modelo singleton
     private static ManejadorAVL manejadorAVL;
-    private final String PATH = "src/main/resources/Grafica/";
+    private final String PATH = "src/";//src/main/resources/Grafica/
     private final String GRAPH_NAME = "AVL.dot";
     private final String IMG_NAME = "AVL.jpg";
     private int TOTAL_CARDS = 52;
@@ -162,14 +161,17 @@ public class ManejadorAVL {
     }
     
     public String getAVLImage()throws IOException{                
-        this.manejadorErrores.resetError(); //Aquí se mandará a invocar el método para hacer la graficación... y a partir del resultado que dé, se procederá a hacer la apertura, conversión, o lo que se deba hacer para que se muestre la img en pantalla
-        File file;        
+        this.manejadorErrores.resetError(); //Aquí se mandará a invocar el método para hacer la graficación... y a partir del resultado que dé, se procederá a hacer la apertura, conversión, o lo que se deba hacer para que se muestre la img en pantalla        
         
-        this.avlTree.graficar(this.PATH+this.GRAPH_NAME, this.PATH+this.IMG_NAME);
-        file = new File(this.PATH + this.IMG_NAME);
+        boolean isOK = this.avlTree.graficar(this.GRAPH_NAME, this.IMG_NAME);       
         
-        System.out.println("se retorna el path");
-        return this.jsonParser.path_ToJSON(file.getPath());
+        if(isOK){
+            System.out.println("se retorna el path");
+            return this.jsonParser.path_ToJSON(this.PATH+IMG_NAME);            
+        }
+        
+        manejadorErrores.addError("Error al intentar graficar, inténtelo de nuevo\n");
+        return "";
         
         /*this.manejadorAVL.getErrorHandler().addError("Surgió un error en el flujo de los datos");
           System.out.println("Surgió un error en el flujo de los datos" +e.getMessage());*/

@@ -5,7 +5,6 @@
  */
 package com.example.Pyramid_AVL_EDD.Backend.EDD;
 
-import com.example.Pyramid_AVL_EDD.Backend.Tools.ImageGenerator;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,11 +16,8 @@ import java.io.PrintWriter;
 public class Node<E> {
     private E contenido;    
     private Node<E> leftChild;
-    private Node<E> rightChild;
-    private ImageGenerator imageGenerator;
+    private Node<E> rightChild;    
     private int level;
-    
-    private final String GRAPH_NAME = "AVL.dot";
       
     public Node(E elElemento){
         this(elElemento, null, null);//Es decir que cuando el padre sea null, el nodo que se está inspeccionando será la raíz...
@@ -132,41 +128,40 @@ public class Node<E> {
         return 1;
     }//literalmente para hijos, porque los nietos no se cuentan con esto xD
     
-     public void graficar(String dotPath, String imageDirectory) {
+     public boolean graficar(String graphName, String imageName) {
         FileWriter fichero = null;
         PrintWriter escritor;
         try
-        {
-            /*this.imageGenerator = new ImageGenerator();
-            this.imageGenerator.setGraphInfo(this.GRAPH_NAME, dotPath, imageDirectory);
-            this.imageGenerator.saveImage(getCodigoGraphviz());*/
-            
-            fichero = new FileWriter(this.GRAPH_NAME);
+        {            
+            fichero = new FileWriter(graphName);
+            //fichero = new FileWriter(dotPath);
             escritor = new PrintWriter(fichero);
             escritor.print(getCodigoGraphviz());
+            
+            System.out.println("dotName: "+ graphName + "imageName: "+imageName+"\n");
         } 
         catch (Exception e){
-            System.out.println("dotPath: "+ dotPath + "imagePath: "+imageDirectory+"\n");
+            System.out.println("dotPath: "+ graphName + "imagePath: "+imageName+"\n");
             System.err.println("Error al escribir el archivo aux_grafico.dot" + e.getMessage());
+            return false;
         }finally{
            try {
                 if (null != fichero)
                     fichero.close();
-           }catch (Exception e2){
-               System.err.println("Error al cerrar el archivo aux_grafico.dot");
+           }catch (Exception e){
+               System.err.println("Error al cerrar el archivo aux_grafico.dot "+e.getMessage());
+               return false;
            } 
         }                
 
         try {      
             Runtime runtime = Runtime.getRuntime();              
-            runtime.exec( "dot -Tjpg "+this.GRAPH_NAME+" -o "+ imageDirectory);            
+            runtime.exec( "dot -Tjpg "+ graphName +" -o "+ imageName);           
         }catch (IOException ex) {
             System.err.println("Error al generar la imagen para el archivo aux_grafico.dot "+ ex.getMessage());
-        }        
-         
-        /*this.imageGenerator = new ImageGenerator();
-        this.imageGenerator.setGraphInfo(this.GRAPH_NAME, path);
-        this.imageGenerator.start();*/
+            return false;
+        }
+        return true;
     }
     
     private String getCodigoGraphviz() {

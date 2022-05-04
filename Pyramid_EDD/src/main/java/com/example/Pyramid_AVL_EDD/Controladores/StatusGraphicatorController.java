@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -21,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatusGraphicatorController {
     private ManejadorAVL manejadorAVL = ManejadorAVL.getAVLHandler();    
     
-   // @ResponseBody//los otros getter no lo tienen y funcionan xD
+    @ResponseBody//los otros getter no lo tienen y funcionan xD
     @GetMapping(value = "/Game/status-avltree",
      produces = MediaType.APPLICATION_JSON_VALUE)//si te da error ahí averiguas cómo setear direcciones... si se puede devolver un JSON, por los msjes que se deben desplegar, entonces no uses esto MediaType.IMAGE_JPEG_VALUE
     public ResponseEntity<String> graph(){        
         String JSON = null;           
             
         try {        
-            JSON = this.manejadorAVL.getAVLImage();         
+            JSON = this.manejadorAVL.getAVLImage();
             System.out.println("se ha obtenido el path");
         } catch (IOException ex) {
             this.manejadorAVL.getErrorHandler().addError("Surgió un error en el flujo de los datos");
