@@ -5,7 +5,7 @@ nodo31 [ label ="<C0>|J♦|<C1>"];
 nodo11 [ label ="<C0>|J♣|<C1>"];
 nodo5 [ label ="<C0>|5♣|<C1>"];
 nodo4 [ label ="<C0>|4♣|<C1>"];
-nodo1 [ label ="As♣"];
+nodo1 [ label ="A♣"];
 nodo4:C0->nodo1
 nodo5:C0->nodo4
 nodo9 [ label ="9♣"];
@@ -15,7 +15,7 @@ nodo27 [ label ="<C0>|7♦|<C1>"];
 nodo13 [ label ="<C0>|K♣|<C1>"];
 nodo12 [ label ="Q♣"];
 nodo13:C0->nodo12
-nodo21 [ label ="As♦"];
+nodo21 [ label ="A♦"];
 nodo13:C1->nodo21
 nodo27:C0->nodo13
 nodo28 [ label ="<C0>|8♦|<C1>"];
@@ -28,7 +28,7 @@ nodo50 [ label ="<C0>|10♥|<C1>"];
 nodo45 [ label ="<C0>|5♥|<C1>"];
 nodo43 [ label ="<C0>|3♥|<C1>"];
 nodo32 [ label ="<C0>|Q♦|<C1>"];
-nodo41 [ label ="As♥"];
+nodo41 [ label ="A♥"];
 nodo32:C1->nodo41
 nodo43:C0->nodo32
 nodo44 [ label ="4♥"];

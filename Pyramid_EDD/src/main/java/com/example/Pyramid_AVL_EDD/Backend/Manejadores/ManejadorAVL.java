@@ -246,7 +246,7 @@ public class ManejadorAVL {
         
         for (int carta = 0; carta < 4; carta++) {
             for (int opcion = 1; opcion <= 13; opcion++) {
-                if(name.trim().equals(((opcion == 1)?"As":((opcion == 11)?"J":
+                if(name.trim().equals(((opcion == 1)?"A":((opcion == 11)?"J":
                         ((opcion == 12)?"Q":((opcion == 13)?"K":(opcion)))))
                         + tipoCartas[carta])){
                     return true;
@@ -258,7 +258,7 @@ public class ManejadorAVL {
     }
     
     private int getValue(String nombreCarta){
-        return (nombreCarta.contains("As")?1:(nombreCarta.contains("2")?2
+        return (nombreCarta.contains("A")?1:(nombreCarta.contains("2")?2
            :(nombreCarta.contains("3")?3:(nombreCarta.contains("4")?4
            :(nombreCarta.contains("5")?5:(nombreCarta.contains("6")?6
            :(nombreCarta.contains("7")?7:(nombreCarta.contains("8")?8
